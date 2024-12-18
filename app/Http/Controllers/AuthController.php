@@ -2,64 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\SignUpRequest;
 use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function logIn(Request $request)
+    public function logIn(LoginRequest $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $validated = $request->validated();
 
-        $user = User::where('email', $request->email)->first();
-
-        if (! $user || ! Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
+        if (!Auth::attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        if (!$user->hasVerifiedEmail()) {
-            $token = $request->bearerToken();
+        Auth::user();
 
-            if (!$token) {
-                return response()->json([
-                    'message' => 'Your email is not verified. Please verify your email to log in.'
-                ], 400);
-            }
-        }
-
+        return response()->json([
+            'message' => 'Login successful.',
+        ], 200);
     }
 
-    public function signUp(Request $request)
+    public function signUp(SignUpRequest $request)
     {
-        $request->validate([
-            'name' => 'required|unique:users',
-            'email' => 'required|email|unique:users',
-            'password' => 'required'
-        ]);
+        $validated = $request->validated();
 
         $user = User::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'password' => bcrypt($request->input('password'))
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']), // or use Hash::make()
         ]);
 
-        $token = $user->createToken('Verify Email', ['*'], Carbon::now()->addHours(2))->plainTextToken;
+        event(new Registered($user));
 
-        $verificationUrl = 'http://127.0.0.1:5173/log-in?token=' . $token;
-
-        Mail::raw("<a>$verificationUrl</a>", function ($message) use ($user) {
-            $message->to($user->email)
-                    ->subject('Email Verification');
-        });
+        Auth::login($user);
 
         return response()->json([
             'message' => 'Please check your email for verification link.',

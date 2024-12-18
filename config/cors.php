@@ -1,4 +1,5 @@
 <?php
+
 return [
 
     /*
@@ -14,7 +15,7 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'email/*'],
 
     'allowed_methods' => ['*'],
 
@@ -23,7 +24,7 @@ return [
         "http://192.168.1.98:5173",
         'http://localhost:5173',
     ],
- 
+
     'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
