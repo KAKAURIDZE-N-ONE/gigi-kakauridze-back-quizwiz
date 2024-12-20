@@ -3,7 +3,7 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -16,9 +16,22 @@ class CustomVerifyEmail extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct($verificationUrl)
+    public function __construct($user)
     {
-        $this->verificationUrl = $verificationUrl;
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => $user->id, 'hash' => sha1($user->email)]
+        );
+
+        $frontendUrl = config('app.frontend_url');
+        $appUrl = config('app.url');
+        $customVerificationUrl = str_replace(
+            $appUrl,
+            $frontendUrl,
+            $verificationUrl
+        );
+        $this->verificationUrl = $customVerificationUrl;
     }
 
     /**

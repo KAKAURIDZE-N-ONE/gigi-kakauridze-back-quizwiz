@@ -6,10 +6,8 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignUpRequest;
 use App\Models\User;
 use App\Notifications\CustomVerifyEmail;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\URL;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 class AuthController extends Controller
 {
@@ -42,23 +40,24 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        $verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['id' => $user->id, 'hash' => sha1($user->email)]
-        );
-
-        $frontendUrl = env('FRONTEND_URL', 'http://127.0.0.1:5173'); // Default fallback if .env value is missing
-        $customVerificationUrl = str_replace(
-            'http://127.0.0.1:8000',
-            $frontendUrl,
-            $verificationUrl
-        );
-
-        $user->notify(new CustomVerifyEmail($customVerificationUrl));
+        $user->notify(new CustomVerifyEmail($user));
 
         return response()->json([
             'message' => 'Please check your email for verification link.',
         ], 200);
+    }
+
+    public function verifyEmail(EmailVerificationRequest $request)
+    {
+        $request->fulfill();
+
+        return response()->json([
+          'message' => 'Email verified successfully!',
+        ], 200);
+    }
+
+    public function getUser()
+    {
+        return response()->json(Auth::user());
     }
 }
