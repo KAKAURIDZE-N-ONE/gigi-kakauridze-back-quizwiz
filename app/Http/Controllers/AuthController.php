@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Notifications\CustomVerifyEmail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -54,6 +55,13 @@ class AuthController extends Controller
         return response()->json([
           'message' => 'Email verified successfully!',
         ], 200);
+    }
+
+    public function verifyNotfication(Request $request)
+    {
+        $request->user()->sendEmailVerificationNotification();
+
+        return response()->json(['message' => 'Verification link sent!']);
     }
 
     public function getUser()
