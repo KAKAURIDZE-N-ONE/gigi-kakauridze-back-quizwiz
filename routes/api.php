@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/api/log-in', [AuthController::class, 'logIn']);
-Route::post('/api/sign-up', [AuthController::class, 'signUp']);
+Route::post('/log-in', [AuthController::class, 'logIn']);
+Route::post('/sign-up', [AuthController::class, 'signUp']);
 
-Route::get('/api/user', function () {
+Route::get('/user', function () {
     return response()->json(Auth::user());
-})->middleware('verified:sanctum');
+})->middleware('auth:sanctum', 'verified:sanctum');
 
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
@@ -20,7 +20,9 @@ Route::get('/email/verify', function () {
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
 
-    return redirect(env('FRONTEND_URL') . '/log-in');
+    return response()->json([
+      'message' => 'Email verified successfully!',
+    ], 200);
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {
