@@ -2,23 +2,41 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Answer;
+use App\Models\Category;
+use App\Models\Question;
+use App\Models\Quiz;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $categories = Category::factory(13)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => '12344321'
-        ]);
+        $quizzes = Quiz::factory(90)->create();
+
+        foreach ($quizzes as $quiz) {
+            $quiz->categories()->attach(
+                $categories->random(rand(1, 3))->pluck('id')->toArray()
+            );
+
+            $questions = Question::factory(4)->create([
+                'quiz_id' => $quiz->id,
+            ]);
+
+            foreach ($questions as $question) {
+                $correctAnswersCount = rand(1, 2);
+                $correctAnswers = fake()->randomElements(range(0, 3), $correctAnswersCount);
+
+                foreach (range(0, 3) as $i) {
+                    Answer::factory()->create([
+                        'question_id' => $question->id,
+                        'is_correct' => in_array($i, $correctAnswers),
+                    ]);
+                }
+            }
+        }
     }
+
 }

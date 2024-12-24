@@ -49,4 +49,9 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
+
+    public function quizzes()
+    {
+        return $this->belongsToMany(Quiz::class, 'user_quiz');
+    }
 }
