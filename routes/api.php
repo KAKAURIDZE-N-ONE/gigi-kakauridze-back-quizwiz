@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\QuizController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -19,3 +21,7 @@ Route::view(
 )->middleware('auth')->name('verification.notice');
 
 Route::post('/email/verification-notification', [AuthController::class, 'verifyNotfication'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+Route::get('/quizzes', [QuizController::class, 'getQuizzes']);
+
+Route::get('/categories', [CategoryController::class, 'getCategories']);
