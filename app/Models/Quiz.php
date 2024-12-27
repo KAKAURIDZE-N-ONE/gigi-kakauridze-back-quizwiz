@@ -26,4 +26,9 @@ class Quiz extends Model
     {
         return $this->belongsToMany(User::class, 'user_quiz');
     }
+
+    public function level(): BelongsTo
+    {
+        return $this->belongsTo(Level::class);
+    }
 }
