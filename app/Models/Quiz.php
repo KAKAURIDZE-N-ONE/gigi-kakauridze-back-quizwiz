@@ -51,24 +51,42 @@ class Quiz extends Model
         }]);
 
         if ($request->has('completed')) {
-            $completed = explode(',', $request->query('completed'));
-            $hasCompleted = in_array('completed', $completed);
-            $hasNotCompleted = in_array('not-completed', $completed);
+            $completedStatuses = explode(',', $request->query('completed'));
 
-            if ($hasCompleted && !$hasNotCompleted) {
-                $query->whereHas('users', function ($query) use ($user) {
-                    $query->where('users.id', $user->id)
-                          ->whereNotNull('user_quiz.completed_at');
-                });
-            } elseif ($hasNotCompleted && !$hasCompleted) {
-                $query->whereDoesntHave('users', function ($query) use ($user) {
-                    $query->where('users.id', $user->id)
-                          ->whereNotNull('user_quiz.completed_at');
-                });
+            if ($this->hasCompletedOnly($completedStatuses)) {
+                $this->filterCompleted($query, $user);
+            } elseif ($this->hasNotCompletedOnly($completedStatuses)) {
+                $this->filterNotCompleted($query, $user);
             }
         }
 
         return $query;
+    }
+
+    private function hasCompletedOnly(array $statuses): bool
+    {
+        return in_array('completed', $statuses) && !in_array('not-completed', $statuses);
+    }
+
+    private function hasNotCompletedOnly(array $statuses): bool
+    {
+        return in_array('not-completed', $statuses) && !in_array('completed', $statuses);
+    }
+
+    private function filterCompleted(Builder $query, $user): void
+    {
+        $query->whereHas('users', function ($query) use ($user) {
+            $query->where('users.id', $user->id)
+                  ->whereNotNull('user_quiz.completed_at');
+        });
+    }
+
+    private function filterNotCompleted(Builder $query, $user): void
+    {
+        $query->whereDoesntHave('users', function ($query) use ($user) {
+            $query->where('users.id', $user->id)
+                  ->whereNotNull('user_quiz.completed_at');
+        });
     }
 
 
