@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Answer;
 use App\Models\Category;
+use App\Models\Level;
 use App\Models\Question;
 use App\Models\Quiz;
 use Illuminate\Database\Seeder;
@@ -14,12 +15,19 @@ class DatabaseSeeder extends Seeder
     {
         $categories = Category::factory(13)->create();
 
-        $quizzes = Quiz::factory(90)->create();
+        $levels = Level::factory(7)->create();
+
+        $quizzes = Quiz::factory(26)->create();
 
         foreach ($quizzes as $quiz) {
+            $quiz->update([
+                'level_id' => $levels->random()->id,
+            ]);
+
             $quiz->categories()->attach(
                 $categories->random(rand(1, 3))->pluck('id')->toArray()
             );
+
 
             $questions = Question::factory(4)->create([
                 'quiz_id' => $quiz->id,

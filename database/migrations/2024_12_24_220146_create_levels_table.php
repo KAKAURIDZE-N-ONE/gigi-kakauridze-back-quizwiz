@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Level;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,14 +10,12 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::create('quizzes', function (Blueprint $table) {
+        Schema::create('levels', function (Blueprint $table) {
             $table->id();
-            $table->text('image');
-            $table->string('title');
-            $table->text('description');
-            $table->integer('duration');
-            $table->integer('total_filled');
-            $table->foreignIdFor(Level::class);
+            $table->string('level');
+            $table->string('icon_color');
+            $table->string('background_color');
+            $table->string('active_background_color');
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('quizzes');
+        Schema::dropIfExists('levels');
     }
 };

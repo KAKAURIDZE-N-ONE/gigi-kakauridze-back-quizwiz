@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Level;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,7 +22,7 @@ class QuizFactory extends Factory
             'title' => fake()->jobTitle(),
             'description' => fake()->sentence(),
             'duration' => fake()->numberBetween(10, 180),
-            'difficulty' => fake()->randomElement(['easy', 'medium', 'hard']),
+            'level_id' => Level::factory(),
             'total_filled' => fake()->numberBetween(10, 180),
         ];
     }

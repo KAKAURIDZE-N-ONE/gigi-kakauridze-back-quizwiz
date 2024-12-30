@@ -12,23 +12,28 @@ class QuizController extends Controller
     {
         $user = Auth::user();
 
-        $quizzesQuery = Quiz::with([
-            'questions' => function ($query) {
-                $query->select('id', 'quiz_id', 'point');
-            },
-            'categories' => function ($query) {
-                $query->select('categories.id', 'categories.name');
-            }]);
+        $quizzesQuery = Quiz::withRelations();
 
         if ($user) {
-            $quizzesQuery->with(['users' => function ($query) use ($user) {
-                $query->where('users.id', $user->id) // Filter for the logged-in user
-                      ->select('users.id', 'user_quiz.completed_at', 'user_quiz.total_time', 'user_quiz.user_result'); // Include pivot data
-            }]);
-
+            $quizzesQuery->filterByUserCompletion($request, $user);
         } else {
             $quizzesQuery->without('users');
         }
+
+        if ($request->has('levels')) {
+            $quizzesQuery->filterByLevels($request->query('levels'));
+        }
+
+        if ($request->has('categories')) {
+            $quizzesQuery->filterByCategories($request->query('categories'));
+        }
+
+        if ($request->has('sortBy') && $request->has('direction')) {
+            $field = $request->query('sortBy');
+            $direction = $request->query('direction');
+            $quizzesQuery->applySorting($field, $direction);
+        }
+
 
         $quizzes = $quizzesQuery->simplePaginate(12);
         return response()->json($quizzes);
