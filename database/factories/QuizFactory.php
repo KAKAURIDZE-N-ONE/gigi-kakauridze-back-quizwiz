@@ -22,7 +22,7 @@ class QuizFactory extends Factory
             'title' => fake()->jobTitle(),
             'description' => fake()->sentence(),
             'duration' => fake()->numberBetween(10, 180),
-            'level_id' => 123,
+            'level_id' => Level::factory(),
             'total_filled' => fake()->numberBetween(10, 180),
         ];
     }
