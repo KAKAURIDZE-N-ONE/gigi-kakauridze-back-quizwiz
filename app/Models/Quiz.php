@@ -34,13 +34,27 @@ class Quiz extends Model
         return $this->belongsTo(Level::class);
     }
 
-    public function scopeWithRelations(Builder $query): Builder
+    public function scopeWithRelations(Builder $query, $user = null, $withAnswers = false): Builder
     {
-        return $query->with([
-            'questions:id,quiz_id,point',
+        $query->with([
+            'questions:id,quiz_id,point,question',
             'level:id,level,icon_color,background_color',
             'categories:id,name',
         ]);
+
+
+        if ($user) {
+            $query->with(['users' => function ($query) use ($user) {
+                $query->where('users.id', $user->id)
+                      ->select('users.id', 'user_quiz.completed_at', 'user_quiz.total_time', 'user_quiz.user_result');
+            }]);
+        }
+
+        if ($withAnswers) {
+            $query->with(['questions.answers:id,question_id,answer,is_correct']);
+        }
+
+        return $query;
     }
 
     public function scopeFilterByUserCompletion(Builder $query, Request $request, $user): Builder

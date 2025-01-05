@@ -6,8 +6,20 @@ use App\Models\Quiz;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use function PHPUnit\Framework\isNull;
+
 class QuizController extends Controller
 {
+    public function getQuiz(Quiz $quiz, Request $request)
+    {
+        $user = Auth::user();
+
+        $quizQuery = Quiz::withRelations($user, true)->find($quiz->id);
+
+        return response()->json($quizQuery);
+
+    }
+
     public function getQuizzes(Request $request)
     {
         $user = Auth::user();
@@ -34,8 +46,13 @@ class QuizController extends Controller
             $quizzesQuery->applySorting($field, $direction);
         }
 
+        if ($request->has('except')) {
+            $quizzesQuery->where('id', '!=', $request->query('except'));
+        }
 
-        $quizzes = $quizzesQuery->simplePaginate(12);
+        $limit = $request->has('limit') ? $request->query('limit') : 12;
+
+        $quizzes = $quizzesQuery->simplePaginate($limit);
         return response()->json($quizzes);
     }
 }
