@@ -46,7 +46,8 @@ class Quiz extends Model
         if ($user) {
             $query->with(['users' => function ($query) use ($user) {
                 $query->where('users.id', $user->id)
-                      ->select('users.id', 'user_quiz.completed_at', 'user_quiz.total_time', 'user_quiz.user_result');
+                      ->select('users.id')
+                      ->withPivot('completed_at', 'total_time', 'user_result');
             }]);
         }
 

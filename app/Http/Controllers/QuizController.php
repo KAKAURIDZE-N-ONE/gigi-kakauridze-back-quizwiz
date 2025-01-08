@@ -26,31 +26,28 @@ class QuizController extends Controller
 
         $quizzesQuery = Quiz::withRelations();
 
-        if ($user) {
-            $quizzesQuery->filterByUserCompletion($request, $user);
-        } else {
-            $quizzesQuery->without('users');
-        }
-
-        if ($request->has('levels')) {
-            $quizzesQuery->filterByLevels($request->query('levels'));
-        }
-
-        if ($request->has('categories')) {
-            $quizzesQuery->filterByCategories($request->query('categories'));
-        }
-
-        if ($request->has('sortBy') && $request->has('direction')) {
+        $quizzesQuery
+        ->when($user, function ($query) use ($request, $user) {
+            $query->filterByUserCompletion($request, $user);
+        }, function ($query) {
+            $query->without('users');
+        })
+        ->when($request->has('levels'), function ($query) use ($request) {
+            $query->filterByLevels($request->query('levels'));
+        })
+        ->when($request->has('categories'), function ($query) use ($request) {
+            $query->filterByCategories($request->query('categories'));
+        })
+        ->when($request->has('sortBy') && $request->has('direction'), function ($query) use ($request) {
             $field = $request->query('sortBy');
             $direction = $request->query('direction');
-            $quizzesQuery->applySorting($field, $direction);
-        }
+            $query->applySorting($field, $direction);
+        })
+        ->when($request->has('except'), function ($query) use ($request) {
+            $query->where('id', '!=', $request->query('except'));
+        });
 
-        if ($request->has('except')) {
-            $quizzesQuery->where('id', '!=', $request->query('except'));
-        }
-
-        $limit = $request->has('limit') ? $request->query('limit') : 12;
+        $limit = $request->query('limit', 12);
 
         $quizzes = $quizzesQuery->simplePaginate($limit);
         return response()->json($quizzes);
