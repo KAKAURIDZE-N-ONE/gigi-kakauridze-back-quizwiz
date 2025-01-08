@@ -6,36 +6,66 @@ use App\Models\Quiz;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use function PHPUnit\Framework\isNull;
+
 class QuizController extends Controller
 {
+    public function getQuiz(Quiz $quiz, Request $request)
+    {
+        $user = Auth::user();
+
+        $quiz->load([
+            'questions:id,quiz_id,point,question',
+            'level:id,level,icon_color,background_color',
+            'categories:id,name',
+        ]);
+
+        if ($user) {
+            $quiz->load([
+                'users' => fn ($query) => $query
+                    ->where('users.id', $user->id)
+                    ->select('users.id')
+                    ->withPivot('completed_at', 'total_time', 'user_result'),
+            ]);
+        }
+
+        $quiz->load('questions.answers:id,question_id,answer,is_correct');
+
+
+        return response()->json($quiz);
+    }
+
+
     public function getQuizzes(Request $request)
     {
         $user = Auth::user();
 
         $quizzesQuery = Quiz::withRelations();
 
-        if ($user) {
-            $quizzesQuery->filterByUserCompletion($request, $user);
-        } else {
-            $quizzesQuery->without('users');
-        }
-
-        if ($request->has('levels')) {
-            $quizzesQuery->filterByLevels($request->query('levels'));
-        }
-
-        if ($request->has('categories')) {
-            $quizzesQuery->filterByCategories($request->query('categories'));
-        }
-
-        if ($request->has('sortBy') && $request->has('direction')) {
+        $quizzesQuery
+        ->when($user, function ($query) use ($request, $user) {
+            $query->filterByUserCompletion($request, $user);
+        }, function ($query) {
+            $query->without('users');
+        })
+        ->when($request->has('levels'), function ($query) use ($request) {
+            $query->filterByLevels($request->query('levels'));
+        })
+        ->when($request->has('categories'), function ($query) use ($request) {
+            $query->filterByCategories($request->query('categories'));
+        })
+        ->when($request->has('sortBy') && $request->has('direction'), function ($query) use ($request) {
             $field = $request->query('sortBy');
             $direction = $request->query('direction');
-            $quizzesQuery->applySorting($field, $direction);
-        }
+            $query->applySorting($field, $direction);
+        })
+        ->when($request->has('except'), function ($query) use ($request) {
+            $query->where('id', '!=', $request->query('except'));
+        });
 
+        $limit = $request->query('limit', 12);
 
-        $quizzes = $quizzesQuery->simplePaginate(12);
+        $quizzes = $quizzesQuery->simplePaginate($limit);
         return response()->json($quizzes);
     }
 }
