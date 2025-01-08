@@ -14,11 +14,27 @@ class QuizController extends Controller
     {
         $user = Auth::user();
 
-        $quizQuery = Quiz::withRelations($user, true)->find($quiz->id);
+        $quiz->load([
+            'questions:id,quiz_id,point,question',
+            'level:id,level,icon_color,background_color',
+            'categories:id,name',
+        ]);
 
-        return response()->json($quizQuery);
+        if ($user) {
+            $quiz->load([
+                'users' => fn ($query) => $query
+                    ->where('users.id', $user->id)
+                    ->select('users.id')
+                    ->withPivot('completed_at', 'total_time', 'user_result'),
+            ]);
+        }
 
+        $quiz->load('questions.answers:id,question_id,answer,is_correct');
+
+
+        return response()->json($quiz);
     }
+
 
     public function getQuizzes(Request $request)
     {

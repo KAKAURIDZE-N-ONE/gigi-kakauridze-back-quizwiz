@@ -34,7 +34,7 @@ class Quiz extends Model
         return $this->belongsTo(Level::class);
     }
 
-    public function scopeWithRelations(Builder $query, $user = null, $withAnswers = false): Builder
+    public function scopeWithRelations(Builder $query, $user = null): Builder
     {
         $query->with([
             'questions:id,quiz_id,point,question',
@@ -49,10 +49,6 @@ class Quiz extends Model
                       ->select('users.id')
                       ->withPivot('completed_at', 'total_time', 'user_result');
             }]);
-        }
-
-        if ($withAnswers) {
-            $query->with(['questions.answers:id,question_id,answer,is_correct']);
         }
 
         return $query;
