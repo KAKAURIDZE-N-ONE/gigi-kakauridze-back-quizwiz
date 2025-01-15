@@ -15,14 +15,9 @@ class DatabaseSeeder extends Seeder
     {
         $categories = Category::factory(13)->create();
 
-        $levels = Level::factory(7)->create();
-
         $quizzes = Quiz::factory(26)->create();
 
         foreach ($quizzes as $quiz) {
-            $quiz->update([
-                'level_id' => $levels->random()->id,
-            ]);
 
             $quiz->categories()->attach(
                 $categories->random(rand(1, 3))->pluck('id')->toArray()

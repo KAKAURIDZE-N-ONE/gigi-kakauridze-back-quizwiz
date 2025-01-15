@@ -20,6 +20,7 @@ class QuizFactory extends Factory
         return [
             'image' => 'https://picsum.photos/200/300?random=' . fake()->uuid,
             'title' => fake()->jobTitle(),
+            'instructions' => fake()->text(),
             'description' => fake()->sentence(),
             'duration' => fake()->numberBetween(10, 180),
             'level_id' => Level::factory(),

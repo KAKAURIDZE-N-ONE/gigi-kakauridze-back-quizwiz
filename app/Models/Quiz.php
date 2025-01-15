@@ -26,7 +26,7 @@ class Quiz extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'user_quiz');
+        return $this->belongsToMany(User::class, 'user_quiz')->withPivot('completed_at', 'total_time', 'user_result');
     }
 
     public function level(): BelongsTo
@@ -113,6 +113,11 @@ class Quiz extends Model
         return $query->whereHas('categories', function ($query) use ($categoriesArray) {
             $query->whereIn('categories.id', $categoriesArray);
         });
+    }
+
+    public function scopeFilterBySearch(Builder $query, $search): Builder
+    {
+        return $query->where('title', 'LIKE', '%' . $search . '%');
     }
 
     public function scopeApplySorting(Builder $query, $field, $direction): Builder
