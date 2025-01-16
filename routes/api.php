@@ -29,8 +29,14 @@ Route::post('/email/verification-notification', [AuthController::class, 'verifyN
 
 Route::get('/quizzes', [QuizController::class, 'getQuizzes']);
 
+Route::get('/quizzes/count', [QuizController::class, 'getQuizzesQuantity']);
+
 Route::get('/quizzes/{quiz}', [QuizController::class, 'getQuiz']);
 
+Route::post('/quizzes/{quiz}', [QuizController::class, 'submitQuiz']);
+
 Route::get('/categories', [CategoryController::class, 'getCategories']);
+
+Route::get('/categories/count', [CategoryController::class, 'getCategoriesLength']);
 
 Route::get('/levels', [LevelController::class, 'getLevels']);
