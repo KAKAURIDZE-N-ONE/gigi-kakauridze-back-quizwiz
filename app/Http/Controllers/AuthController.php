@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignUpRequest;
 use App\Models\User;
@@ -9,6 +10,7 @@ use App\Notifications\CustomVerifyEmail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller
 {
@@ -79,5 +81,16 @@ class AuthController extends Controller
     public function getUser()
     {
         return response()->json(Auth::user());
+    }
+
+
+    public function forgotPassword(ForgotPasswordRequest $request)
+    {
+        $validated = $request->validated();
+        $email = $validated['email'];
+
+        $status = Password::sendResetLink(['email' => $email]);
+
+        return response()->json($status);
     }
 }
