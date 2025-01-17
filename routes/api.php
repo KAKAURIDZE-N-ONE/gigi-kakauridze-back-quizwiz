@@ -23,6 +23,8 @@ Route::view(
     'auth.verify-email'
 )->middleware('auth')->name('verification.notice');
 
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('guest');
+
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('guest');
 
 Route::post('/email/verification-notification', [AuthController::class, 'verifyNotfication'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
