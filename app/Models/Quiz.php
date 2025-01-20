@@ -14,6 +14,17 @@ class Quiz extends Model
 {
     use HasFactory;
 
+
+    protected $fillable = [
+        'title',
+        'description',
+        'duration',
+        'total_filled',
+        'image',
+        'level_id',
+        'instructions'
+    ];
+
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'quiz_category', 'quiz_id', 'category_id');

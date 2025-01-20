@@ -54,9 +54,7 @@
     ]
 ) <span class="break-all">
     [{{ str_replace('/api', '', str_replace(config('app.url'), config('app.frontend_url'), $displayableActionUrl)) }}]
-    <span style="display: none;">
-        ({{ str_replace('/api', '', str_replace(config('app.url'), config('app.frontend_url'), $actionUrl)) }})
-    </span>
+    ({{ str_replace('/api', '', str_replace(config('app.url'), config('app.frontend_url'), $actionUrl)) }})
 </span>
 </x-slot:subcopy>
 @endisset

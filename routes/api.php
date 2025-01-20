@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FooterController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\QuizController;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,10 @@ Route::view(
     'auth.verify-email'
 )->middleware('auth')->name('verification.notice');
 
+Route::get('/reset-password/{token}', function (string $token) {
+    return view('auth.reset-password', ['token' => $token]);
+})->middleware('guest')->name('password.reset');
+
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('guest');
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('guest');
@@ -42,3 +47,5 @@ Route::get('/categories', [CategoryController::class, 'getCategories']);
 Route::get('/categories/count', [CategoryController::class, 'getCategoriesLength']);
 
 Route::get('/levels', [LevelController::class, 'getLevels']);
+
+Route::get('/footer', [FooterController::class, 'getFooterData']);

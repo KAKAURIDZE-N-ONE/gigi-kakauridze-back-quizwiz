@@ -13,7 +13,9 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $categories = Category::factory(13)->create();
+        $this->call(FooterTableSeeder::class);
+
+        $categories = Category::factory(12)->create();
 
         $quizzes = Quiz::factory(26)->create();
 

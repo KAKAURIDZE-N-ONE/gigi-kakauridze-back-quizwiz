@@ -20,7 +20,7 @@ class CustomVerifyEmail extends Notification
     {
         $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',
-            now()->addMinutes(60),
+            now()->addMinutes(120),
             ['id' => $user->id, 'hash' => sha1($user->email)]
         );
 

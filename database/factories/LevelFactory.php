@@ -18,9 +18,9 @@ class LevelFactory extends Factory
     {
         return [
                 'level' => fake()->word(),
-                'icon_color' => fake()->rgbColor(),
-                'background_color' => fake()->rgbColor(),
-                'active_background_color' => fake()->rgbColor()
+                'icon_color' => fake()->hexColor(),
+                'background_color' => fake()->hexColor(),
+                'active_background_color' => fake()->hexColor(),
         ];
     }
 }

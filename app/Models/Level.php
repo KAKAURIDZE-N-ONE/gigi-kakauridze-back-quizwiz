@@ -11,6 +11,13 @@ class Level extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'level',
+        'icon_color',
+        'background_color',
+        'active_background_color',
+    ];
+
     public function quizzes(): HasMany
     {
         return $this->hasMany(Quiz::class);

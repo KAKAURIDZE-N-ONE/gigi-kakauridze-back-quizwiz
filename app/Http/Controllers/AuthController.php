@@ -34,7 +34,12 @@ class AuthController extends Controller
     {
         $validated = $request->validated();
 
-        if (!Auth::guard('web')->attempt(['email' => $validated['email'], 'password' => $validated['password']])) {
+        $remember = $request->has('remember') && $request->remember;
+
+        if (!Auth::guard('web')->attempt(
+            ['email' => $validated['email'], 'password' => $validated['password']],
+            $remember
+        )) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
@@ -95,9 +100,7 @@ class AuthController extends Controller
 
         $status = Password::sendResetLink(['email' => $email]);
 
-        return $status === Password::RESET_LINK_SENT
-        ? response()->json(['message' => __($status)])
-        : response()->json(['message' => __($status)], 400);
+        return response()->json($status);
     }
 
     public function resetPassword(ResetPasswordRequest $request)
