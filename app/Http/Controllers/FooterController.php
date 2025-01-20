@@ -12,7 +12,6 @@ class FooterController extends Controller
         $footerData = DB::table('footer')->first();
 
         return response()->json([
-            'status' => 'success',
             'data' => $footerData,
         ]);
     }

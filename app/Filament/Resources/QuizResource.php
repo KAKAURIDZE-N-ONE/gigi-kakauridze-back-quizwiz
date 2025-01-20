@@ -55,12 +55,11 @@ class QuizResource extends Resource
               ,
                 Forms\Components\Select::make('level_id')
                 ->label('Level')
-                ->options(Level::whereNotNull('level')->pluck('level', 'id')) // Use 'level' column instead of 'name'
+                ->relationship('level', 'level')
                 ->required(),
 
                 MultiSelect::make('categories')
                 ->label('Categories')
-                ->options(Category::all()->pluck('name', 'id')) // Use 'name' and 'id' from the categories table
                 ->preload()
                 ->required()
                 ->relationship('categories', 'name'),
@@ -85,7 +84,7 @@ class QuizResource extends Resource
                     ->maxLength(10),
                     Repeater::make('answers')
                     ->label('Answers')
-                    ->relationship('answers')  // Bind it to the answers relationship
+                    ->relationship('answers')
                     ->schema([
                         TextArea::make('answer')
                             ->label('Answer Text')

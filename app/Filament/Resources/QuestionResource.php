@@ -25,7 +25,7 @@ class QuestionResource extends Resource
             ->schema([
                 Forms\Components\Select::make('quiz_id')
                     ->label('Quiz')
-                    ->relationship('quiz', 'title') // Assuming `Quiz` model has a `title` field
+                    ->relationship('quiz', 'title')
                     ->required()
                     ->searchable(),
 
@@ -41,7 +41,7 @@ class QuestionResource extends Resource
 
                 Repeater::make('answers')
                     ->label('Answers')
-                    ->relationship('answers')  // Bind it to the answers relationship
+                    ->relationship('answers')
                     ->schema([
                         TextArea::make('answer')
                             ->label('Answer Text')
