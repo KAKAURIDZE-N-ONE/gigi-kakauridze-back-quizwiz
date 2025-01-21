@@ -34,7 +34,7 @@ Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->midd
 
 Route::post('/email/verification-notification', [AuthController::class, 'verifyNotfication'])->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-Route::get('/quizzes', [QuizController::class, 'getQuizzes']);
+Route::get('/quizzes', [QuizController::class, 'getQuizzes'])->name('quizzes.index');
 
 Route::get('/quizzes/count', [QuizController::class, 'getQuizzesQuantity']);
 

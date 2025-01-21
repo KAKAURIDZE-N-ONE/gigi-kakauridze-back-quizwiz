@@ -49,8 +49,6 @@ class QuizController extends Controller
 
         $quizzesQuery = Quiz::withRelations();
 
-        // return response()->json($request->query('search'));
-
         $quizzesQuery
         ->when($user, function ($query) use ($request, $user) {
             $query->filterByUserCompletion($request, $user);
