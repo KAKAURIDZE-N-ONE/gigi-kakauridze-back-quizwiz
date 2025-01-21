@@ -16,7 +16,7 @@ class FilterTest extends TestCase
         Quiz::factory()->create(['level_id' => $level->id]);
         Quiz::factory()->create(['level_id' => $level->id]);
 
-        $response = $this->get('/api/quizzes?levels=' . $level->id);
+        $response = $this->get(route('quizzes.index', ['levels' => $level->id]));
 
         $response->assertStatus(200);
 
@@ -47,7 +47,10 @@ class FilterTest extends TestCase
         Quiz::factory()->create(['title' => 'Banana Quiz']);
         Quiz::factory()->create(['title' => 'Carrot Quiz']);
 
-        $response = $this->get('/api/quizzes?sortBy=title&direction=asc');
+        $response = $this->get(route('quizzes.index', [
+            'sortBy' => 'title',
+            'direction' => 'asc'
+        ]));
 
         $response->assertStatus(200);
 
@@ -70,7 +73,10 @@ class FilterTest extends TestCase
         Quiz::factory()->create(['title' => 'Banana Quiz']);
         Quiz::factory()->create(['title' => 'Carrot Quiz']);
 
-        $response = $this->get('/api/quizzes?sortBy=title&direction=desc');
+        $response = $this->get(route('quizzes.index', [
+            'sortBy' => 'title',
+            'direction' => 'desc'
+        ]));
 
         $response->assertStatus(200);
 
@@ -94,7 +100,10 @@ class FilterTest extends TestCase
         Quiz::factory()->create(['title' => 'Quiz 2', 'total_filled' => 50]);
         Quiz::factory()->create(['title' => 'Quiz 3', 'total_filled' => 30]);
 
-        $response = $this->get('/api/quizzes?sortBy=total_filled&direction=desc');
+        $response = $this->get(route('quizzes.index', [
+            'sortBy' => 'total_filled',
+            'direction' => 'desc'
+        ]));
 
         $response->assertStatus(200);
 
@@ -116,7 +125,10 @@ class FilterTest extends TestCase
         Quiz::factory()->create(['title' => 'Quiz 2', 'created_at' => now()->subDays(2)]);
         Quiz::factory()->create(['title' => 'Quiz 3', 'created_at' => now()->subDays(1)]);
 
-        $response = $this->get('/api/quizzes?sortBy=created_at&direction=asc');
+        $response = $this->get(route('quizzes.index', [
+            'sortBy' => 'created_at',
+            'direction' => 'asc'
+        ]));
 
         $response->assertStatus(200);
 
@@ -139,7 +151,10 @@ class FilterTest extends TestCase
         Quiz::factory()->create(['title' => 'Quiz 2', 'created_at' => now()->subDays(2)]);
         Quiz::factory()->create(['title' => 'Quiz 3', 'created_at' => now()->subDays(1)]);
 
-        $response = $this->get('/api/quizzes?sortBy=created_at&direction=desc');
+        $response = $this->get(route('quizzes.index', [
+            'sortBy' => 'created_at',
+            'direction' => 'desc'
+        ]));
 
         $response->assertStatus(200);
 
@@ -172,7 +187,12 @@ class FilterTest extends TestCase
         $quiz3->categories()->attach($category1->id);
         $quiz3->categories()->attach($category2->id);
 
-        $response = $this->get('/api/quizzes?levels=' . $level->id . '&categories=' . $category1->id . '&sortBy=title&direction=asc');
+        $response = $this->get(route('quizzes.index', [
+            'levels' => $level->id,
+            'categories' => $category1->id,
+            'sortBy' => 'title',
+            'direction' => 'asc',
+        ]));
 
         $response->assertStatus(200);
 
