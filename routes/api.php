@@ -5,8 +5,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FooterController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\QuizController;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 Route::post('/log-in', [AuthController::class, 'logIn']);
 Route::post('/log-out', [AuthController::class, 'logout']);

@@ -55,7 +55,11 @@ class CustomVerifyEmail extends Notification
                     ->line('Thank you for registering with us. Please click the button below to verify your email address.')
                     ->action('Verify Email', $this->verificationUrl)
                     ->line('If you did not create an account, no further action is required.')
-                    ->line('Thank you for using our application!');
+                    ->line('Thank you for using our application!')
+                    ->markdown('emails.verify', [
+                        'name' => $notifiable->name,
+                        'verificationUrl' => $this->verificationUrl,
+                    ]);
     }
 
     /**
