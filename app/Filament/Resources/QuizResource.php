@@ -43,12 +43,6 @@ class QuizResource extends Resource
                 ->numeric()
                 ->required(),
 
-            Forms\Components\TextInput::make('total_filled')
-                ->label('Total Filled')
-                ->numeric()
-                ->required()
-                ->default(0),
-
                 Forms\Components\Textarea::make('instructions')
                 ->label('Instructions')
                 ->required()
@@ -128,10 +122,9 @@ class QuizResource extends Resource
             Tables\Columns\TextColumn::make('total_filled')
                 ->label('Total Filled')
                 ->sortable(),
-
-            Tables\Columns\TextColumn::make('level.name')
-                ->label('Level')
-                ->sortable(),
+         Tables\Columns\TextColumn::make('level_id')  // Assuming you have a 'name' attribute in your Level model
+                    ->label('Level')
+                    ->sortable(),
 
             Tables\Columns\TextColumn::make('created_at')
                 ->label('Created At')
