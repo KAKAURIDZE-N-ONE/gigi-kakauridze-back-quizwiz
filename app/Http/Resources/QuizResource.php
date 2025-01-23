@@ -16,7 +16,7 @@ class QuizResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'image' => url(Storage::url($this->image)),
+            'image' => Storage::url($this->image),
             'title' => $this->title,
             'description' => $this->description,
             'duration' => $this->duration,
