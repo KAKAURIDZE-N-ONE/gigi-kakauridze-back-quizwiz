@@ -106,6 +106,7 @@ class AuthController extends Controller
     public function resetPassword(ResetPasswordRequest $request)
     {
         $validated = $request->validated();
+
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function (User $user, string $password) {
