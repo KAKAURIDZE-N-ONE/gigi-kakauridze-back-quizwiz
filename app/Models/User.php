@@ -22,7 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword,
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->is_admin || (
+        return $this->is_admin && (
             (
                 (str_ends_with($this->email, '@gmail.com') || str_ends_with($this->email, '@redberry.ge'))
                 && $this->hasVerifiedEmail()
