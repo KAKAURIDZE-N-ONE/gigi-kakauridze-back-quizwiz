@@ -122,8 +122,8 @@ class QuizResource extends Resource
             Tables\Columns\TextColumn::make('total_filled')
                 ->label('Total Filled')
                 ->sortable(),
-         Tables\Columns\TextColumn::make('level_id')  // Assuming you have a 'name' attribute in your Level model
-                    ->label('Level')
+            Tables\Columns\TextColumn::make('level.level')
+                    ->label('Level Name')
                     ->sortable(),
 
             Tables\Columns\TextColumn::make('created_at')
