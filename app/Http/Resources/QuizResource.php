@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class QuizResource extends JsonResource
@@ -14,7 +15,7 @@ class QuizResource extends JsonResource
      */
     public function toArray($request): array
     {
-        return [
+        $data = [
             'id' => $this->id,
             'image' => Storage::url($this->image),
             'title' => $this->title,
@@ -28,7 +29,12 @@ class QuizResource extends JsonResource
             'questions' => $this->questions,
             'level' => $this->level,
             'categories' => $this->categories,
-            'users' => $this->users,
         ];
+
+        if (Auth::check()) {
+            $data['users'] = $this->users;
+        }
+
+        return $data;
     }
 }
