@@ -4,6 +4,9 @@ namespace Database\Factories;
 
 use App\Models\Level;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Quiz>
@@ -17,8 +20,13 @@ class QuizFactory extends Factory
      */
     public function definition(): array
     {
+        $imageName = Str::random(16) . '.png';
+        $imageUrl = 'https://picsum.photos/200/300?random=' . Str::uuid();
+        $imageContents = Http::get($imageUrl)->body();
+        Storage::disk('public')->put('images/' . $imageName, $imageContents);
+
         return [
-            'image' => 'https://picsum.photos/200/300?random=' . fake()->uuid,
+            'image' => 'images/' . $imageName,
             'title' => fake()->jobTitle(),
             'instructions' => fake()->text(),
             'description' => fake()->sentence(),

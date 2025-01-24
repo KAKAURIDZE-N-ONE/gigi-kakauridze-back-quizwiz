@@ -63,7 +63,6 @@ class FilterTest extends TestCase
         $sortedTitles = $titles;
         sort($sortedTitles);
 
-        var_dump($titles);
         $this->assertEquals($sortedTitles, $titles, 'The quizzes are not sorted by title in ascending order.');
     }
 
@@ -89,7 +88,6 @@ class FilterTest extends TestCase
         $sortedTitles = $titles;
         rsort($sortedTitles);
 
-        var_dump($titles);
 
         $this->assertEquals($sortedTitles, $titles, 'The quizzes are not sorted by title in descending order.');
     }
